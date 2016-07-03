@@ -44,6 +44,7 @@ Brief summary/description of the plugin.
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
+        dsyncMarshallerRegistrar(box.DsyncMarshallerRegistrar)
     }
 
     def doWithDynamicMethods = { ctx ->
@@ -60,6 +61,7 @@ Brief summary/description of the plugin.
         // watching is modified and reloaded. The event contains: event.source,
         // event.application, event.manager, event.ctx, and event.plugin.
 
+        //DEV only
         event.ctx.applicationListeners.each { listener ->
             if(listener instanceof DsyncPersistenceListener){
                 event.ctx.removeApplicationListener listener

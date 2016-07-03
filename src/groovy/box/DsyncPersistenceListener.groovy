@@ -13,7 +13,7 @@ class DsyncPersistenceListener extends AbstractPersistenceEventListener{
 
 	@Override
 	protected void onPersistenceEvent(final AbstractPersistenceEvent event) {
-		if(!event.entityObject.hasProperty('syncSeq'))
+		if(!event.entityObject.class.isAnnotationPresent(DataSyncable))
 			return
 
 	    switch(event.eventType) {
@@ -40,14 +40,13 @@ class DsyncPersistenceListener extends AbstractPersistenceEventListener{
 		if(entityObject.hasProperty('syncSeqAssigned'))
 			return
 
-		def nextNumber = sequenceGeneratorService.nextNumber(entityObject.class, 'dataSync')
-		entityObject.syncSeq = nextNumber as Long
+		def nextNumber = sequenceGeneratorService.nextNumber(entityObject.class, 'dataSync') as Long
+		entityObject.syncSeq = nextNumber
 		entityObject.metaClass.syncSeqAssigned = true
 	}
 
-	private def logDeleted(entityObject){
-		println "deleting... $entityObject.properties"
-		def nextNumber = sequenceGeneratorService.nextNumber(entityObject.class, 'dataSync')
+	private def logDeleted(entityObject){		
+		def nextNumber = sequenceGeneratorService.nextNumber(entityObject.class, 'dataSync') as Long		
 		new DeletedEntitySyncLog(store: entityObject.class.simpleName, refId: entityObject.id, syncSeq: nextNumber).save()
 	}
 }
