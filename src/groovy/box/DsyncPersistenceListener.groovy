@@ -46,7 +46,8 @@ class DsyncPersistenceListener extends AbstractPersistenceEventListener{
 	}
 
 	private def logDeleted(entityObject){
+		println "deleting... $entityObject.properties"
 		def nextNumber = sequenceGeneratorService.nextNumber(entityObject.class, 'dataSync')
-		new DeletedEntitySyncLog(store: entityObject.class.simpleName, refId: entityObject.id, syncSeq: nextNumber).save(flush: true)
+		new DeletedEntitySyncLog(store: entityObject.class.simpleName, refId: entityObject.id, syncSeq: nextNumber).save()
 	}
 }
