@@ -14,20 +14,21 @@ class DsyncPersistenceListener extends AbstractPersistenceEventListener{
 	@Override
 	protected void onPersistenceEvent(final AbstractPersistenceEvent event) {
 		if(!event.entityObject.class.isAnnotationPresent(DataSyncable))
-			return
+			return		
 
-	    switch(event.eventType) {
-	        case EventType.Validation:
-	        	updateSyncSeq(event.entityObject)
-	        break
-	        
-	        /*case EventType.PreUpdate:
+	    switch(event.eventType) {	  
+	    	case EventType.Validation:
+	    		if(event.entityObject.syncSeq == null){
+	    			event.entityObject.syncSeq = 0
+	    		}
+	    		break      	       
+	        case EventType.SaveOrUpdate:
 	            updateSyncSeq(event.entityObject)
-	        break;*/
+	        	break
 	        
 	        case EventType.PreDelete:
 	            logDeleted(event.entityObject)
-	        break;
+	        	break
 	    }
 	}
 
@@ -37,12 +38,13 @@ class DsyncPersistenceListener extends AbstractPersistenceEventListener{
 	}
 
 	private def updateSyncSeq(entityObject){
-		if(entityObject.hasProperty('syncSeqAssigned'))
-			return
+	
+		//if(entityObject.hasProperty('syncSeqAssigned'))
+		//	return
 
 		def nextNumber = sequenceGeneratorService.nextNumber(entityObject.class, 'dataSync') as Long
 		entityObject.syncSeq = nextNumber
-		entityObject.metaClass.syncSeqAssigned = true
+		//entityObject.metaClass.syncSeqAssigned = true
 	}
 
 	private def logDeleted(entityObject){		

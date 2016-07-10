@@ -62,12 +62,12 @@ Brief summary/description of the plugin.
         // event.application, event.manager, event.ctx, and event.plugin.
 
         //DEV only
-        event.ctx.applicationListeners.each { listener ->
+        /*event.ctx.applicationListeners.each { listener ->
             if(listener instanceof DsyncPersistenceListener){
                 event.ctx.removeApplicationListener listener
             }
         }
-        doRegister(event.ctx, event.application)
+        doRegister(event.ctx, event.application)*/
     }
 
     def onConfigChange = { event ->

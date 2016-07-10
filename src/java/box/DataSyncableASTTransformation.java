@@ -34,7 +34,7 @@ public class DataSyncableASTTransformation implements ASTTransformation {
 
 	public void createAdditionalField(ClassNode classNode){		
 		classNode.addProperty("syncSeq", Modifier.PUBLIC, new ClassNode(Long.class), null, null, null);
-		addSettings("constraints", classNode, "syncSeq", "nullable:false, display:false, bindable:false");
+		addSettings("constraints", classNode, "syncSeq", "nullable:false, bindable:false");
 
 		String idx_name = classNode.getNameWithoutPackage() + "_SYNCSEQ_IDX";
 		addSettings("mapping", classNode, "syncSeq", "index: '" + idx_name + "'");
