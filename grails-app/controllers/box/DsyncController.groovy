@@ -30,7 +30,7 @@ class DsyncController {
 
 		lastSyncSeq = lastSyncSeq ?: 0
 		def result = DeletedEntitySyncLog.createCriteria().list {
-			eq 'store', store
+			eq 'store', store.capitalize()
 			gt 'syncSeq', lastSyncSeq
 			order 'syncSeq', 'asc'
 			maxResults 100
@@ -45,15 +45,17 @@ class DsyncController {
 			response.sendError(422)
 			return
 		}
-		def instance = dc.newInstance()
 		def jsonData = request.JSON
+		def instance = jsonData.remoteId ? dc.get(jsonData.remoteId) : dc.newInstance()		
 		def result = [valid: false]
 		try{
 			bindData(instance, jsonData)
 			instance.save(flush: true)
-			if(instance.hasErrors())
+			if(instance.hasErrors()){
 				log.debug instance.errors
-			result.valid = (instance.id != null)
+			}else{
+				result.valid = (instance.id != null)	
+			}			
 		}catch(e){}
 		render result as JSON
 	}
