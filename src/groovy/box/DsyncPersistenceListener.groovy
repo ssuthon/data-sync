@@ -13,7 +13,7 @@ class DsyncPersistenceListener extends AbstractPersistenceEventListener{
 
 	@Override
 	protected void onPersistenceEvent(final AbstractPersistenceEvent event) {
-		if(!event.entityObject.class.isAnnotationPresent(DataSyncable))
+		if(!event.entityObject?.class.isAnnotationPresent(DataSyncable))
 			return		
 
 	    switch(event.eventType) {	  
