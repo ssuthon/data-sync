@@ -13,29 +13,16 @@ class DsyncPersistenceListener extends AbstractPersistenceEventListener{
 
 	@Override
 	protected void onPersistenceEvent(final AbstractPersistenceEvent event) {
-	if(event.source != this.datastore){ return; }
+		if(event.source != this.datastore){ return; }
 		if(!event.entityObject || !event.entityObject.class.isAnnotationPresent(DataSyncable))
-			return		
-
-	    /*switch(event.eventType) {	  
-	    	case EventType.Validation:
-	    		if(event.entityObject.syncSeq == null){
-	    			event.entityObject.syncSeq = 0
-	    		}
-	    		break      	       
-	        case EventType.SaveOrUpdate:
-	            updateSyncSeq(event.entityObject)
-	        	break
-	        
-	        case EventType.PreDelete:
-	            logDeleted(event.entityObject)
-	        	break
-	    }*/
-if(event instanceof PreInsertEvent || event instanceof PreUpdateEvent){
-   println 'before inserting... or updating...'
-}else if(event instanceof PreDeleteEvent){
-  logDeleted(event.entityObject)
-}
+			return	
+				
+		if(event instanceof PreInsertEvent || event instanceof PreUpdateEvent){
+			println 'before inserting... or updating...'
+		  	updateSyncSeq(event.entityObject)
+		}else if(event instanceof PreDeleteEvent){
+		  	logDeleted(event.entityObject)
+		}
 	}
 
 	@Override
