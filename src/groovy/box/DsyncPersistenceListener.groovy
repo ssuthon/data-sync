@@ -31,9 +31,13 @@ class DsyncPersistenceListener extends AbstractPersistenceEventListener{
 	}
 
 	private def updateSyncSeq(entityObject){
-	
+		if(entityObject.hasProperty('syncSeqAssigned'))
+			return
+
 		def nextNumber = sequenceGeneratorService.nextNumber(entityObject.class, 'dataSync') as Long
 		entityObject.syncSeq = nextNumber
+
+		entityObject.metaClass.syncSeqAssigned = true
 	}
 
 	private def logDeleted(entityObject){		
