@@ -17,8 +17,7 @@ class DsyncPersistenceListener extends AbstractPersistenceEventListener{
 		if(!event.entityObject || !event.entityObject.class.isAnnotationPresent(DataSyncable))
 			return	
 				
-		if(event instanceof PreInsertEvent || event instanceof PreUpdateEvent){
-			println 'before inserting... or updating...'
+		if(event instanceof PreInsertEvent || event instanceof PreUpdateEvent){			
 		  	updateSyncSeq(event.entityObject)
 		}else if(event instanceof PreDeleteEvent){
 		  	logDeleted(event.entityObject)
