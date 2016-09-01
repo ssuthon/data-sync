@@ -15,7 +15,7 @@ class DsyncController {
 		def result = dc.createCriteria().list {
 			gt 'syncSeq', lastSyncSeq
 			order 'syncSeq', 'asc'
-			maxResults 100
+			maxResults 500
 		}
 
 		render result as JSON
