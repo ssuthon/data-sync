@@ -51,12 +51,10 @@ class DsyncController {
 		try{
 			bindData(instance, jsonData)
 			instance.save(flush: true)
-			if(instance.hasErrors()){
-				log.debug instance.errors
-			}else{
-				result.valid = (instance.id != null)	
-			}			
-		}catch(e){}
+			result.valid = (instance.id != null)	
+		}catch(e){
+			log.debug('fail to save upload data: ' + e)
+		}
 		render result as JSON
 	}
 
