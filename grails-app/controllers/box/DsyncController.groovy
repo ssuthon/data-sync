@@ -40,7 +40,7 @@ class DsyncController {
 	}
 
 	def upload(String store){
-		def dc = findDomainClassByName(store.capitalize())
+		def dc = findDomainClassByName(toCamelCase(store, true))
     	if(!dc || !dc.isAnnotationPresent(DataUploadable)){
 			response.sendError(422)
 			return
@@ -50,9 +50,12 @@ class DsyncController {
 		def result = [valid: false]
 		try{
 			bindData(instance, jsonData)
-			instance.save(flush: true)
-			result.valid = (instance.id != null)	
+			instance.save flush: true, failOnError: true
+			result.valid = (instance.id != null)
+			result.remoteId = instance.id	
+			println result
 		}catch(e){
+			println e
 			log.debug('fail to save upload data: ' + e)
 		}
 		render result as JSON
@@ -61,4 +64,9 @@ class DsyncController {
 	private def findDomainClassByName(name){
 		grailsApplication.domainClasses.find { it.clazz.simpleName == name }?.clazz
 	}
+
+	private static String toCamelCase( String text, boolean capitalized = false ) {
+        text = text.replaceAll( "(_)([A-Za-z0-9])", { Object[] it -> it[2].toUpperCase() } )
+        return capitalized ? text.capitalize() : text
+    }
 }
