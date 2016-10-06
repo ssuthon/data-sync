@@ -40,16 +40,31 @@ class DsyncController {
 	}
 
 	def upload(String store){
+		def data = request.JSON ?: JSON.parse(params.jsonData)
+		println data
+
+		if(data.__store){
+			store = data.__store
+		}
+
 		def dc = findDomainClassByName(toCamelCase(store, true))
     	if(!dc || !dc.isAnnotationPresent(DataUploadable)){
 			response.sendError(422)
 			return
 		}
-		def jsonData = request.JSON
-		def instance = jsonData.remoteId ? dc.get(jsonData.remoteId) : dc.newInstance()		
+		
+		def instance = data.remoteId ? dc.get(data.remoteId) : dc.newInstance()		
 		def result = [valid: false]
 		try{
-			bindData(instance, jsonData)
+			bindData(instance, data)
+			if(data.__id){
+				instance.id = data.__id;
+			}
+			if(request.fileNames){
+				request.fileNames.each{ file ->
+					instance[file] = request.getFile(file).bytes
+				}
+			}
 			instance.save flush: true, failOnError: true
 			result.valid = (instance.id != null)
 			result.remoteId = instance.id	
