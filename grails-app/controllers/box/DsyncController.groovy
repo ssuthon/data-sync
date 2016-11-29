@@ -15,7 +15,7 @@ class DsyncController {
 		def result = dc.createCriteria().list {
 			gt 'syncSeq', lastSyncSeq
 			order 'syncSeq', 'asc'
-			maxResults 500
+			maxResults grailsApplication.config.box.dsync.maxUpdatePerRound ?: 500
 		}
 
 		render result as JSON
@@ -33,7 +33,7 @@ class DsyncController {
 			eq 'store', store.capitalize()
 			gt 'syncSeq', lastSyncSeq
 			order 'syncSeq', 'asc'
-			maxResults 100
+			maxResults grailsApplication.config.box.dsync.maxDeletePerRound ?: 100
 		}
 
 		render result as JSON
