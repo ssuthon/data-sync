@@ -62,15 +62,13 @@ class DsyncController {
 			}
 			if(request.fileNames){
 				request.fileNames.each{ file ->
-					instance[file] = request.getFile(file).bytes
+					instance[file] = request.getFile(file)?.bytes
 				}
 			}
 			instance.save flush: true, failOnError: true
 			result.valid = (instance.id != null)
 			result.remoteId = instance.id	
-			println result
 		}catch(e){
-			println e
 			log.debug('fail to save upload data: ' + e)
 		}
 		render result as JSON
