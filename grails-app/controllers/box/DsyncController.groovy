@@ -41,7 +41,7 @@ class DsyncController {
 
 	def upload(String store){
 		def data = request.JSON ?: JSON.parse(params.jsonData)
-		println data
+		log.debug "processing ${data}"
 
 		if(data.__store){
 			store = data.__store
