@@ -75,7 +75,7 @@ class DsyncController {
 				instance.id = data.__id;
 			}
 			if(data.uuid){
-				instance.uuid = data.uuid
+				instance.syncUuid = data.uuid
 			}
 			if(request.fileNames){
 				request.fileNames.each{ file ->
