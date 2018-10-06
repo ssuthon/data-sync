@@ -58,12 +58,24 @@ class DsyncController {
 	}
 
 	private updateData(dc, data, fileSupport = true){
-		def instance = data.remoteId ? dc.get(data.remoteId) : dc.newInstance()		
+		def instance = null
+		if(data.remoteId){
+			instance = dc.get(data.remoteId)
+		}else if(data.uuid){
+			instance = dc.findBySyncUuid(data.uuid)
+		}
+		
+		if(!instance)
+			instance = dc.newInstance()		
+		
 		def result = [valid: false]
 		try{
 			bindData(instance, data)
 			if(data.__id){
 				instance.id = data.__id;
+			}
+			if(data.uuid){
+				instance.uuid = data.uuid
 			}
 			if(request.fileNames){
 				request.fileNames.each{ file ->

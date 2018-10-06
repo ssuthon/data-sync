@@ -41,7 +41,7 @@ public class DataSyncableASTTransformation implements ASTTransformation {
 
 
 		classNode.addProperty("syncUuid", Modifier.PUBLIC, new ClassNode(String.class), null, null, null);
-		addSettings("constraints", classNode, "syncUuid", "nullable: true");
+		addSettings("constraints", classNode, "syncUuid", "nullable: true, bindable: false");
 
 		idx_name = classNode.getNameWithoutPackage() + "_SYNCUUID_IDX";
 		addSettings("mapping", classNode, "syncUuid", "index: '" + idx_name + "'");
