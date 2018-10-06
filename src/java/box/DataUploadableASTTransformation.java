@@ -20,7 +20,7 @@ import static org.codehaus.groovy.ast.MethodNode.ACC_STATIC;
 
 
 @GroovyASTTransformation(phase = CompilePhase.CANONICALIZATION)
-public class DataSyncableASTTransformation implements ASTTransformation {
+public class DataUploadableASTTransformation implements ASTTransformation {
 	
 	public void visit(ASTNode[] astNodes, SourceUnit sourceUnit) {
 
@@ -32,12 +32,12 @@ public class DataSyncableASTTransformation implements ASTTransformation {
 		}
 	}
 
-	public void createAdditionalField(ClassNode classNode){		
-		classNode.addProperty("syncSeq", Modifier.PUBLIC, new ClassNode(Long.class), new ConstantExpression(new Long(0)), null, null);
-		addSettings("constraints", classNode, "syncSeq", "nullable: false, bindable: false");		
+	public void createAdditionalField(ClassNode classNode){				
+		classNode.addProperty("syncUuid", Modifier.PUBLIC, new ClassNode(String.class), null, null, null);
+		addSettings("constraints", classNode, "syncUuid", "nullable: true, bindable: false");
 
-		String idx_name = classNode.getNameWithoutPackage() + "_SYNCSEQ_IDX";
-		addSettings("mapping", classNode, "syncSeq", "index: '" + idx_name + "'");
+		String idx_name = classNode.getNameWithoutPackage() + "_SYNCUUID_IDX";
+		addSettings("mapping", classNode, "syncUuid", "index: '" + idx_name + "'");
 	}
 
 	public void addSettings(String name,ClassNode classNode,String fieldName,String config){
