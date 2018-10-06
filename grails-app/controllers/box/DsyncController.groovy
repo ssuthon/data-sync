@@ -53,6 +53,11 @@ class DsyncController {
 			return
 		}
 		
+		def result = updateData(dc, data)		
+		render result as JSON
+	}
+
+	private updateData(dc, data, fileSupport = true){
 		def instance = data.remoteId ? dc.get(data.remoteId) : dc.newInstance()		
 		def result = [valid: false]
 		try{
@@ -71,7 +76,29 @@ class DsyncController {
 		}catch(e){
 			log.debug('fail to save upload data: ' + e)
 		}
-		render result as JSON
+		result
+	}
+
+	//do not support file update
+	def uploadMultiple(String store){
+		def data = request.JSON ?: JSON.parse(params.jsonData)
+		log.debug "processing ${data}"
+
+		if(data.__store){
+			store = data.__store
+		}
+
+		def dc = findDomainClassByName(toCamelCase(store, true))
+    	if(!dc || !dc.isAnnotationPresent(DataUploadable)){
+			response.sendError(422)
+			return
+		}
+
+		def results = []
+		data.items.each {
+			results.add(updateData(dc, it, false))
+		}		
+		render results as JSON
 	}
 
 	private def findDomainClassByName(name){
